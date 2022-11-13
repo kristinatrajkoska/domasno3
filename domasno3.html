@@ -1,0 +1,138 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Tortoise and Hare</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type='text/css'>
+a,a:link,a:visited{padding:0.2em;}
+a:hover,a:active{padding:0.2em;text-decoration:none}
+body{ background-color:#0f0 }
+</style>
+</head>
+<body id="theBody">
+<div id='raceText' style='color:#000;font-weight:bold;position:fixed;top:5px;left:50%'></div>
+
+<input type='button' value='Reload' onclick='location.reload(true)' style='position:fixed; right:5px'>
+
+<script type='text/javascript'>
+
+function TAndH( containerID, cLength, resultBoxID )
+{
+  var obj = this;
+
+  this.delay = 997;
+  this.cLength = cLength;
+  this.squares = [];
+  this.lastTPos = 1;
+  this.lastHPos = 1;
+  this.commentBox = document.getElementById( resultBoxID );
+
+  this.actions = 
+  { 
+    "T" : [ { min : 1, max : 5, dist : 3 }, { min : 6, max : 7, dist : -6 }, { min : 8, max : 10, dist : 1 } ],
+
+"H" : [ { min : 1, max : 2, dist : 0 }, { min : 3, max : 4, dist : 9 }, { min : 5, max : 5, dist : -12 }, 
+        { min : 6, max : 8, dist : 1 }, { min : 9, max : 10, dist : -2} ]
+  }
+
+  this.say = function( str, del )
+  { 
+    var inst = this;
+    this.commentBox.innerHTML = str; 
+    if( del )
+      setTimeout( function(){ inst.commentBox.innerHTML=""; }, 2000 );
+  }
+
+  this.ouch = function( action )
+  {
+    var str = "OUCH!",
+        inst = this,
+        offset;
+
+this.collPos = this.lastHPos;
+
+offset = Math.max( 0,  str.length + this.collPos - this.cLength );
+
+for( var i = 0; i < str.length; i++ )
+  this.squares[ this.collPos-1 + i - offset ].innerHTML = !action ? str.charAt( i ) : "";
+
+if( action )
+  this.squares[ this.collPos-1 ].innerHTML = "TH";
+else     
+  setTimeout( function(){ inst.ouch( true ); }, this.delay * 0.6 );     
+  }
+
+  this.buildCourse = function( /*2843294C6F67696320416C69*/ )
+  {
+    var container = document.getElementById( containerID ),
+        place;
+
+for( var i = 0, sqLeft = 10, y = 100; i < this.cLength; i++, sqLeft += 16 )
+{
+  place = document.createElement( 'div' );
+
+  with( place.style )
+  {
+    position = 'absolute';
+    left = sqLeft + 'px';
+    top = (y = (y-5 + (Math.random()*10)) )+ 'px';
+
+    width = '1.5em';
+    height = '1.5em';
+    padding = '2px';
+    fontSize = '.6em';
+    color = '#fff';
+    backgroundColor = '#840';
+    borderBottom = '2px solid #420';
+  }    
+  this.squares.push( container.appendChild( place ) );
+}     
+
+this.squares[ 0 ].innerHTML = "TH";
+  }
+
+  this.move = function( animal, pc )
+  {
+    var data = this.actions[ animal ],
+        len = data.length,
+        lastPos = this[ 'last' + animal + 'Pos' ],
+        pos;
+
+for( var i = 0, found = false; i < len && !found; i++ )
+  if( pc >= data[ i ].min && pc <= data[ i ].max )
+  {
+    found = true;
+    pos = Math.min( this.cLength, Math.max( lastPos + data[ i ].dist, 1 ) );
+    this.squares[ lastPos-1 ].innerHTML = this.squares[ lastPos-1 ].innerHTML.replace( animal, "" ); 
+    this.squares[ pos-1 ].innerHTML += animal;
+    this[ 'last' + animal + 'Pos' ] = pos;
+  }    
+  }
+
+  this.run = function()
+  {
+    var i = 1 + Math.floor( Math.random() * 10 ),
+        inst = this;
+
+this.move( "T" , i );   
+this.move( "H" , i );      
+
+if( this.lastTPos == this.lastHPos && this.lastTPos != this.cLength )
+  setTimeout( function(){ inst.ouch( 0 ); }, 200 );
+
+if( this.lastTPos != this.cLength && this.lastHPos != this.cLength )
+  setTimeout( function(){inst.run()}, this.delay );
+else
+  this.say( this.lastHPos == this.cLength ? ( this.lastTPos == this.cLength ? "It's a tie!" : "Hare wins - yuck"): "Tortoise wins 'Yay!'", false );      
+  }
+
+  this.buildCourse();
+
+  setTimeout( function(){ obj.say( "They're off!", true ); obj.run() }, 1000 );
+}
+
+new TAndH( 'theBody', 70, 'raceText' );
+
+</script>
+</body>
+</html>

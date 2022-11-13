@@ -1,0 +1,51 @@
+body {
+    background-color: rgb(46, 129, 46);
+ }
+ 
+ table {
+    border-collapse: collapse;
+    width: 100%
+ }
+ 
+ h1, p {
+    text-align: center;
+ }
+ 
+ .track, .track td {
+    border: 0.125em solid black;
+    padding: 0.5em;
+    background-color: lightgray;
+    height: 1em;
+    color: red;
+    font-weight: bold;
+ }
+ 
+ td.occupied {
+    background-color: white;
+ }
+ 
+ td.hare {
+    color: brown;
+ }
+ 
+ td.tort {
+    color: green;
+ }
+ 
+ #start, #time {
+    color: blue;
+    font-size: 1.25em;
+ }
+ 
+ #start {
+    text-transform: uppercase;
+    font-weight: bold;
+ }
+ 
+ img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 30%;
+    height: auto;
+ }
